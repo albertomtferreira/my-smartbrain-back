@@ -1,10 +1,14 @@
 const express = require('express');
-const port = 3000;
+const bcrypt = require('bcrypt');
+var cors = require('cors');
+const saltRounds = 10;
+const port = 3001;
 
 const app = express();
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
+app.use(cors());
 
 const database = {
   users: [
@@ -24,6 +28,13 @@ const database = {
       entries: 0,
       joined: new Date()
       }
+  ],
+  login:[
+    {
+      id: '987',
+      hash: '',
+      email:"john@gmail.com"
+    }
   ]
 }
 
@@ -34,10 +45,12 @@ app.get('/', (req,res)=>{
 
 //SIGNIN
 app.post('/signin', (req,res)=>{
-  if (req.body.email === database.users[0].email && req.body.password === database.users[0].password){
-    res.json("well Done");
+  console.log(req.body.email);
+  if (req.body.email === database.users[0].email && 
+    req.body.password === database.users[0].password){
+    res.json("success");
   }else{
-    res.status(400).json('error logging in')
+    res.json('error logging again');
   }  
 })
 
@@ -87,3 +100,31 @@ app.post('/image', (req,res)=>{
 app.listen(port, ()=> {
   console.log('app is running on port ', port);
 })
+//BCRYPT NODE --> https://www.npmjs.com/package/bcrypt
+
+// bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
+//   // Store hash in your password DB.
+// });
+
+// // Load hash from your password DB.
+// bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
+//   // result == true
+// });
+// bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
+//   // result == false
+// });
+
+// BCRYPT NODE-JS --> DEPRECATED --> https://www.npmjs.com/package/bcrypt-nodejs
+// bcrypt.hash("bacon", null, null, function(err, hash) {
+//   // Store hash in your password DB.
+// });
+
+// // Load hash from your password DB.
+// bcrypt.compare("bacon", hash, function(err, res) {
+//   // res == true
+// });
+// bcrypt.compare("veggies", hash, function(err, res) {
+//   // res = false
+// });
+
+
