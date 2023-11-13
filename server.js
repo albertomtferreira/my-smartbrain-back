@@ -1,6 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-var cors = require('cors');
+const cors = require('cors');
 const saltRounds = 10;
 const port = 3001;
 
@@ -45,7 +45,7 @@ app.get('/', (req,res)=>{
 
 //SIGNIN
 app.post('/signin', (req,res)=>{
-  console.log(req.body.email);
+  console.log(req.body);
   if (req.body.email === database.users[0].email && 
     req.body.password === database.users[0].password){
     res.json("success");
@@ -57,11 +57,11 @@ app.post('/signin', (req,res)=>{
 //REGISTER
 app.post('/register', (req,res) =>{
   const {email,name,password}=req.body;
+  console.log(req.body.email);
   database.users.push(
     {id:"5",
     name: name,
     email: email,
-    password: password,
     entries: 0,
     joined: new Date()}
   )
@@ -82,7 +82,7 @@ app.get('/profile/:id',(req,res)=>{
   }
 })
 
-app.post('/image', (req,res)=>{
+app.put('/image', (req,res)=>{
   const {id} = req.body;
   let found = false;
   database.users.forEach(user => {
