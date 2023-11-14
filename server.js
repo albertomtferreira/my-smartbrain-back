@@ -16,46 +16,11 @@ const db = knex({
   }
 });
 
-
-// db.select('*').from('users').then(data =>{
-//   console.log(data);
-// });
-
-
-
 const app = express();
 
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 app.use(cors());
-
-const database = {
-  users: [
-    {
-    id:"1",
-    name:"John",
-    email:"john@gmail.com",
-    password:"12345",
-    entries: 0,
-    joined: new Date()
-    },
-    {
-      id:"2",
-      name:"Maria",
-      email:"Maria@gmail.com",
-      password:"54321",
-      entries: 0,
-      joined: new Date()
-      }
-  ],
-  login:[
-    {
-      id: '987',
-      hash: '',
-      email:"john@gmail.com"
-    }
-  ]
-}
 
 //ROOT
 app.get('/', (req,res)=>{
@@ -64,83 +29,79 @@ app.get('/', (req,res)=>{
 
 //SIGNIN
 app.post('/signin', (req,res)=>{
-  console.log(req.body);
-  if (req.body.email === database.users[0].email && 
-    req.body.password === database.users[0].password){
-    res.json("success");
-  }else{
-    res.json('error logging again');
-  }  
+  db.select('email','hash').from('login')
+    .where('email','=',req.body.email)
+    .then(data=>{
+      const isValid=bcrypt.compareSync(req.body.password, data[0].hash);
+      if (isValid){
+        return db.select('*').from('users')
+          .where('email','=',req.body.email)
+          .then(user=>{
+            res.json(user[0])
+          })
+          .catch(err => res.status(400).json('unable to get user'))
+      }else {
+        res.status(400).json('wrong credentials')
+      }
+      
+    })
+    .catch(err => res.status(400).json('wrong credentials'))
 })
 
 //REGISTER
 app.post('/register', (req,res) =>{
   const {email,name,password}=req.body;
-  db('users').insert({
-    email: email,
-    name: name,
-    joined: new Date()
-  }).then(console.log)
-  res.json(database.users[database.users.length-1]);
+  const hash = bcrypt.hashSync(password, saltRounds);
+  db.transaction(trx =>{
+    trx.insert({
+      hash: hash,
+      email: email
+    })
+    .into('login')
+    .returning('email')
+    .then(loginEmail =>{
+      return trx('users')
+        .returning('*')
+        .insert({
+          email: loginEmail[0].email,
+          name: name,
+          joined: new Date()
+        })
+      .then(user =>{
+        res.json(user[0]);
+      })
+    })
+    .then(trx.commit)
+    .catch(trx.rollback)
+  })
+    .catch(err => res.status(400).json('Unable to register!'))
 })
 
 app.get('/profile/:id',(req,res)=>{
   const {id} = req.params;
-    let found = false;
-  database.users.forEach(user => {
-    if (user.id === id){
-      found = true;
-      return res.json(user);
-    }
+  db.select('*')
+  .from('users')
+  .where({id: id})
+  .then(user=>{
+    user.length?
+    res.json(user[0])
+    :res.status(400).json('invalid user');
   })
-  if (!found){
-    res.status(400).json('invalid user ')
-  }
+  .catch(err => res.status(400).json('error getting user'))
 })
 
 app.put('/image', (req,res)=>{
   const {id} = req.body;
-  let found = false;
-  database.users.forEach(user => {
-    if (user.id === id){
-      found = true;
-      user.entries++;
-      return res.json(user.entries);
-    }
+  db('users')
+  .where('id','=',id)
+  .increment('entries',1)
+  .returning('entries')
+  .then(entries => {
+    res.json(entries[0].entries);
   })
-  if (!found){
-    res.status(400).json('invalid user')
-  }
+  .catch(err => res.status(400).json('Unable to get entries'))
 })
 
 app.listen(port, ()=> {
   console.log('app is running on port ', port);
 })
-//BCRYPT NODE --> https://www.npmjs.com/package/bcrypt
-
-// bcrypt.hash(myPlaintextPassword, saltRounds, function(err, hash) {
-//   // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare(myPlaintextPassword, hash, function(err, result) {
-//   // result == true
-// });
-// bcrypt.compare(someOtherPlaintextPassword, hash, function(err, result) {
-//   // result == false
-// });
-
-// BCRYPT NODE-JS --> DEPRECATED --> https://www.npmjs.com/package/bcrypt-nodejs
-// bcrypt.hash("bacon", null, null, function(err, hash) {
-//   // Store hash in your password DB.
-// });
-
-// // Load hash from your password DB.
-// bcrypt.compare("bacon", hash, function(err, res) {
-//   // res == true
-// });
-// bcrypt.compare("veggies", hash, function(err, res) {
-//   // res = false
-// });
-
-
