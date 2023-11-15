@@ -35,6 +35,8 @@ app.post('/register', (req,res) => {register.handleRegister(req,res,db,bcrypt,sa
 app.get('/profile/:id', (req,res) => {profile.handleProfileGet(req,res,db)})
 //IMAGE
 app.put('/image', (req,res) => {image.handleImage(req,res,db)})
+//IMAGE-API
+app.post('/imageurl', (req,res) => {image.handleApiCall(req,res)})
 
 app.listen(port, ()=> {
   console.log('app is running on port ', port);
