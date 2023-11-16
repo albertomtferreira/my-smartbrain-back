@@ -26,17 +26,19 @@ app.use(cors());
 
 //ROOT
 app.get('/', (req,res)=>{res.send('WORKSSSS!!!')})
-//SIGNIN
-app.post('/signin', (req,res) => {signin.handleSignin(req,res,db,bcrypt)})
-//REGISTER
-app.post('/register', (req,res) => {register.handleRegister(req,res,db,bcrypt,saltRounds)})
-//PROFILE
-app.get('/profile/:id', (req,res) => {profile.handleProfileGet(req,res,db)})
-//IMAGE
-app.put('/image', (req,res) => {image.handleImage(req,res,db)})
-//IMAGE-API
-app.post('/imageurl', (req,res) => {image.handleApiCall(req,res)})
+// //SIGNIN
+// app.post('/signin', (req,res) => {signin.handleSignin(req,res,db,bcrypt)})
+// //REGISTER
+// app.post('/register', (req,res) => {register.handleRegister(req,res,db,bcrypt,saltRounds)})
+// //PROFILE
+// app.get('/profile/:id', (req,res) => {profile.handleProfileGet(req,res,db)})
+// //IMAGE
+// app.put('/image', (req,res) => {image.handleImage(req,res,db)})
+// //IMAGE-API
+// app.post('/imageurl', (req,res) => {image.handleApiCall(req,res)})
 
-app.listen(process.env.PORT || 3500, ()=> {
-  console.log(`app is running on  port ${process.env.PORT}`);
-})
+// app.listen(process.env.PORT || 3500, ()=> {
+//   console.log(`app is running on  port ${process.env.PORT}`);
+// })
+
+app.listen(process.env.PORT);
