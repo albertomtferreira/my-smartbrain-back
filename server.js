@@ -2,7 +2,6 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const cors = require('cors');
 const saltRounds = 10;
-const port = 3001;
 const knex = require('knex');
 const register = require('./controllers/register');
 const signin = require('./controllers/signin');
@@ -38,6 +37,6 @@ app.put('/image', (req,res) => {image.handleImage(req,res,db)})
 //IMAGE-API
 app.post('/imageurl', (req,res) => {image.handleApiCall(req,res)})
 
-app.listen(process.env.PORT || port, ()=> {
+app.listen(process.env.PORT || 3500, ()=> {
   console.log(`app is running on port ${process.env.PORT}`);
 })
