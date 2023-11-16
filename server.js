@@ -1,23 +1,23 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const cors = require('cors');
-const saltRounds = 10;
-const knex = require('knex');
-const register = require('./controllers/register');
-const signin = require('./controllers/signin');
-const profile = require('./controllers/profile');
-const image = require('./controllers/image');
+// const saltRounds = 10;
+// const knex = require('knex');
+// const register = require('./controllers/register');
+// const signin = require('./controllers/signin');
+// const profile = require('./controllers/profile');
+// const image = require('./controllers/image');
 
-const db = knex({
-  client: 'pg',
-  connection: {
-    host : '127.0.0.1',
-    port : 5432,
-    user : 'postgres',
-    password : '290811',
-    database : 'smart-brain'
-  }
-});
+// const db = knex({
+//   client: 'pg',
+//   connection: {
+//     host : '127.0.0.1',
+//     port : 5432,
+//     user : 'postgres',
+//     password : '290811',
+//     database : 'smart-brain'
+//   }
+// });
 
 const app = express();
 app.use(express.urlencoded({extended: false}));
