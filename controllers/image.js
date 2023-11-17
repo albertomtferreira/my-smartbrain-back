@@ -2,7 +2,7 @@ const { ClarifaiStub, grpc } = require("clarifai-nodejs-grpc");
 
 const handleApiCall = (req,res)=>{
   // Your PAT (Personal Access Token) can be found in the portal under Authentification
-  const PAT = '5d64e4b1500c49f68d6173563b6facb9';
+  const PAT = process.env.API_CLARIFAI;
   // Specify the correct user_id/app_id pairings
   // Since you're making inferences outside your app's scope
   const USER_ID = 'clarifai';
