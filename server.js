@@ -9,9 +9,20 @@ const profile = require('./controllers/profile');
 const image = require('./controllers/image');
 const { Client } = require('pg');
 
+//FOR DEV USING ONLY
+// const db = knex({
+//   client: 'pg',
+//   connection: {
+//     host : '127.0.0.1',
+//     user : 'posrges',
+//     password : 290811,
+//     database : 'smart-brain'
+//   }
+// });
 
+
+//FOR LIVE USING ON RENDER.COM
 const db = knex({
-  
   client: 'pg',
   connection: {
     connectionString:process.env.DATABASE_URL,
@@ -45,5 +56,3 @@ app.post('/imageurl', (req,res) => {image.handleApiCall(req,res)})
 app.listen(process.env.PORT || 3500, ()=> {
   console.log(`app is running on  port ${process.env.PORT}`);
 })
-
-// app.listen(process.env.PORT);
