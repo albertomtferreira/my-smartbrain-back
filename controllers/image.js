@@ -43,7 +43,7 @@ const handleApiCall = (req,res)=>{
         }
 
         if (response.status.code !== 10000) {
-            // throw new Error("Post model outputs failed, status: " + response.status.description);
+            throw new Error("Post model outputs failed, status: " + response.status.description);
         }
 
         // Since we have one input, one output will exist here
